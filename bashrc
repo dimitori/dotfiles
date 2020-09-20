@@ -91,13 +91,7 @@ fi
 alias ll='ls -alF'
 alias la='ls -A'
 alias l='ls -CF'
-alias viconf='vi ~/.vimrc'
-alias bashconf='vi ~/.bashrc'
-alias tmuxconf='vi ~/.tmux.conf'
-alias py='python3'
-alias python='python3'
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-
+alias lll='ls -l'
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -122,3 +116,14 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+alias viconf='vi ~/dotfiles/vimrc'
+alias bashconf='vi ~/dotfiles/bashrc'
+alias tmuxconf='vi ~/dotfiles/tmux.conf'
+alias nvimconf='vi ~/.config/nvim/init.vim'
+alias py='python3'
+alias python='python3'
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export LANG=en_US.utf8

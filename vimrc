@@ -12,12 +12,16 @@ Plugin 'VundleVim/Vundle.vim'
 "git interface
 Plugin 'tpope/vim-fugitive'
 Plugin 'airblade/vim-gitgutter'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+
 
 "filesystem
 Plugin 'scrooloose/nerdtree'
 Plugin 'jistr/vim-nerdtree-tabs'
-Plugin 'kien/ctrlp.vim' 
-Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
+Plugin 'ryanoasis/vim-devicons'
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plugin 'junegunn/fzf.vim'
 
 "Utils
@@ -38,17 +42,33 @@ Plugin 'ervandew/supertab'
 Plugin 'tmhedberg/SimpylFold'
 
 "JS
-Plugin 'neoclide/coc.nvim', {'branch': 'release'}
-let g:coc_global_extensions = ['coc-emmet', 'coc-css', 'coc-html', 'coc-json', 'coc-prettier', 'coc-tsserver', 'coc-vetur']
+ Plugin 'neoclide/coc.nvim', {'branch': 'release'}
+ let g:coc_global_extensions = [
+ 	\ 'coc-snippets',
+ 	\ 'coc-pairs',
+ 	\ 'coc-tsserver',
+ 	\ 'coc-eslint',
+ 	\ 'coc-emmet',
+ 	\ 'coc-css',
+ 	\ 'coc-html',
+ 	\ 'coc-json',
+ 	\ 'coc-prettier',
+ 	\ 'coc-vetur'
+ 	\ ]
 Plugin 'mattn/emmet-vim'
 let g:user_emmet_leader_key='<C-Z>'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'peitalin/vim-jsx-typescript'
+Plugin 'leafOfTree/vim-vue-plugin'
+Plugin 'posva/vim-vue'
 
 "Colors!!!
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'jnurmine/Zenburn'
 Plugin 'dracula/vim', { 'name': 'dracula' }
+Plugin 'ap/vim-css-color'
+Plugin 'morhetz/gruvbox'
+
 
 "Cosmetic
 Plugin 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
@@ -57,18 +77,22 @@ call vundle#end()
 "  Plugins variables
 filetype plugin indent on    " required
 let g:SimpylFold_docstring_preview = 1
+let g:ctrlp_user_command = ['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard']
 
 "autocomplete
 let g:ycm_autoclose_preview_window_after_completion=1
+let g:ycm_filetype_whitelist = {'*.py': 1}
 
 "custom keys
 let mapleader=" "
 map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+nnoremap <silent> <Leader>f :YmcCompleter FixIt<CR>
 "
 call togglebg#map("<F5>")
 "colorscheme zenburn
-colorscheme solarized
+" colorscheme solarized
 " colorscheme dracula
+colorscheme gruvbox
 
 let NERDTreeIgnore=['\.pyc$', '\~$'] "ignore files in NERDTree
 
@@ -131,8 +155,6 @@ autocmd FileType python set foldmethod=indent
 nnoremap <space> za 
 "----------Stop python PEP 8 stuff--------------
 
-"js stuff"
-autocmd FileType javascript setlocal shiftwidth=2 tabstop=2
 
 
 
@@ -190,16 +212,48 @@ vmap Y "+y
 map J 5j
 map K 5k
 nnoremap <F3> :tabnew $MYVIMRC<CR>
-nnoremap <F2> :set invpaste paste?<CR>
-set pastetoggle=<F2>
+nnoremap <F1> :set invpaste paste?<CR>
+set pastetoggle=<F1>
 set showmode
 
+nnoremap <C-p> :FZF<CR>
+let g:fzf_action = {
+  \ 'ctrl-t': 'tab split',
+  \ 'ctrl-s': 'split',
+  \ 'ctrl-v': 'vsplit'
+  \}
+let $FZF_DEFAULT_COMMAND = 'ag -g ""'
 
-"  For full stack
-au BufNewFile,BufRead *.js, *.html, *.css
-    \ set tabstop=2
-    \ set softtabstop=2
-    \ set shiftwidth=2
+
 "  To avoid extraneous whitespaces
 au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
+
+"I don't like swap files
+set noswapfile
+
+
+function! NERDTreeToggleInCurDir()                                                                                                                                                             
+·   " If NERDTree is open in the current buffer
+·   if (exists("t:NERDTreeBufName") && bufwinnr(t:NERDTreeBufName) != -1)
+·   ·   exe ":NERDTreeClose"
+·   else
+·   ·   if (expand("%:t") != '')
+·   ·   ·   exe ":NERDTreeFind"
+·   ·   else
+·   ·   ·   exe ":NERDTreeToggle"
+·   ·   endif
+·   endif
+endfunction
+
+let g:ycm_filetype_blacklist = { 'ts': 1, 'js': 1 }
+
+" Remap for rename current word
+" nmap <F2> <Plug>(coc-rename)
+
+set smarttab
+set cindent
+set tabstop=2
+set shiftwidth=2
+" always uses spaces instead of tab characters
+set expandtab
